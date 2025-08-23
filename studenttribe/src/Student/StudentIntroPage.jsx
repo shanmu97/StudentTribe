@@ -27,7 +27,7 @@ export default function IntroPage () {
 
       {/* Content Layer */}
       <motion.div
-        className="z-50 text-center px-4 max-w-4xl"
+        className="z-40 text-center px-4 max-w-4xl"
         initial={{ opacity: 0, y: 80 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}

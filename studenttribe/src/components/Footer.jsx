@@ -3,12 +3,13 @@ import { Link } from "react-router-dom";
 
 export default function Footer() {
   const navItems = [
-    { id: "ST School", label: "ST SCHOOL", sectionId: "main-section" },
-    { id: "ST App", label: "ST APP", sectionId: "app-section" },
-    { id: "ST Events", label: "ST EVENTS", sectionId: "events-section" },
-    { id: "ST Beast", label: "ST BEAST", sectionId: "beast-section" },
-    { id: "ST Care", label: "ST CARE", sectionId: "care-section" },
-    { id: "Who We Are", label: "WHO WE ARE", sectionId: "about-section" },
+    { id: "St School", label: "St. School", sectionId: "school" },
+    { id: "ST App", label: "St. App", sectionId: "app" },
+    { id: "ST Opportinities", label: "St. Opportunitires", sectionId: "opportunities" },
+    { id: "ST Events", label: "St. Events", sectionId: "events" },
+    { id: "ST Beast", label: "St. Beast", sectionId: "beast" },
+    { id: "ST Care", label: "St. Care", sectionId: "care" },
+    { id: "Who We Are", label: "WHO WE ARE", sectionId: "about" },
   ];
 
   const scrollToSection = (sectionId) => {
@@ -25,6 +26,19 @@ export default function Footer() {
     <footer className="w-full bg-[#efd1d6]">
       <div className="max-w-7xl mx-auto px-4 py-4 sm:py-8 md:py-12">
         {/* Footer navigation buttons */}
+        <div
+          className="flex flex-wrap justify-center gap-1 sm:gap-2 mb-4 sm:mb-6 md:mb-8"
+        >
+          {navItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => scrollToSection(item.sectionId)}
+              className="px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 rounded-full text-[10px] sm:text-xs md:text-sm font-semibold bg-[#2C1B1B] text-white hover:bg-[#b8001f] hover:text-white transition-all duration-200 shadow whitespace-nowrap"
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
         <div className=" rounded-xl sm:rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8 lg:p-12 xl:p-24 flex flex-col lg:flex-row lg:items-start lg:justify-between relative overflow-hidden min-h-[500px] sm:min-h-[460px] md:min-h-[520px] lg:min-h-[490px]"
         style={{
             background: 'radial-gradient(circle at center center, rgb(95,23,40) 0%, rgb(82,5,27) 20%, rgb(70,6,26) 40%, rgb(50,0,11) 60%, rgb(40,1,11) 85%)'
