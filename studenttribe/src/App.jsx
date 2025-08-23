@@ -15,6 +15,8 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsConditions from './pages/TermsConditions';
 import SplashScreen from './components/SplashScreen/SplashScreen';
 import BrandsIntroPage from './Brands/BrandsIntroPage';
+import StudentApp from './Student/StudentSchool';
+import StudentLayout from './Student/StudentLayout';
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -35,8 +37,8 @@ function App() {
       ) : (
         <Router>
           <Routes>
-            <Route path="/" element={<IntroPage />} />
-            <Route path="/app" element={<AppPage />} />
+            <Route path="/" element={<StudentLayout />} />
+            <Route path="/school" element={<StudentApp />} />
             <Route path="/brands" element={<BrandsIntroPage />} />
             <Route path="/beast" element={<Beast />} />
             <Route path="/care" element={<Care />} />

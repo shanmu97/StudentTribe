@@ -236,7 +236,7 @@ export default function BrandsIntroPage() {
                   key={`left-${index}`}
                   src={src}
                   alt="background"
-                  className="absolute rounded-lg object-cover pointer-events-none select-none opacity-20"
+                  className="absolute rounded-lg object-cover pointer-events-none select-none bg-transparent"
                   style={{
                     top: position.top,
                     left: position.left,

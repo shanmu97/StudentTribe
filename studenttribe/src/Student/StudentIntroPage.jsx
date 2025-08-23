@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import stlogo from "../assets/Whitelogo.png";
 
-const IntroPage = () => {
+export default function IntroPage () {
   const navigate = useNavigate();
   const [hoveredButton, setHoveredButton] = useState("students");
 
@@ -137,4 +137,3 @@ const IntroPage = () => {
   );
 };
 
-export default IntroPage;
