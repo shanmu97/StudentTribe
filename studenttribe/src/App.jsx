@@ -9,7 +9,7 @@ import TermsConditions from './pages/TermsConditions';
 import SplashScreen from './components/SplashScreen/SplashScreen';
 import BrandsIntroPage from './Brands/BrandsIntroPage';
 import StudentApp from './Student/StudentApp';
-import StudentLayout from './Student/StudentLayout';
+import StudentLayout from "./Student/StudentLayout";
 import StudentSchool from './Student/StudentSchool';
 import StudentEvents from './Student/StudentEvents';
 import StudentOpportunities from './Student/StudentOpportunities';
