@@ -1,11 +1,7 @@
-
-
-import React, { useState, useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import React, { useState, useRef } from 'react';
 import banner from "../assets/Stschool/banner.svg";
-import stlogo from "../assets/Red logo.png"
-import centerImg from "../assets/BrandsSection/center.svg"
+import stlogo from "../assets/Red logo.png";
+import centerImg from "../assets/BrandsSection/center.svg";
 import leftmostUpper1st from "../assets/BrandsSection/left1st1.jpg";
 import leftmost2nd from "../assets/BrandsSection/left2nd.jpg";
 import rightUpper1st from "../assets/BrandsSection/rightUpper1st.jpg";
@@ -19,11 +15,8 @@ export default function StudentSchool() {
   const logoRef = useRef(null);
   const logoContainerRef = useRef(null);
   const hideButtonsTimeoutRef = useRef(null);
-  const pinWrapperRef = useRef(null);
-  const titleRef = useRef(null);
-  const buttonRef = useRef(null);
-  
-  // Logo hover logic (copied from original)
+
+  // Show/hide buttons on hover
   const handleLogoOrButtonsMouseEnter = () => {
     if (hideButtonsTimeoutRef.current) {
       clearTimeout(hideButtonsTimeoutRef.current);
@@ -58,56 +51,180 @@ export default function StudentSchool() {
     }
   };
 
-  // Clean up timeout on unmount
-  useEffect(() => {
-    return () => {
-      if (hideButtonsTimeoutRef.current) {
-        clearTimeout(hideButtonsTimeoutRef.current);
-      }
-    };
-  }, []);
+  return (
+    <div
+      className="relative w-screen min-h-screen flex flex-col items-center justify-start bg-gradient-to-br from-[#fff6f6] to-[#FFF8F8] overflow-hidden"
+      id="school"
+    >
+      {/* Main content */}
+      <div className="relative z-10 flex flex-col items-center w-full px-4 pt-4">
+        <div className="mb-6 md:mb-8 text-center">
+          <div
+            ref={(el) => {
+              logoRef.current = el;
+              logoContainerRef.current = el;
+            }}
+            className="logo-container group inline-block cursor-pointer relative"
+            onMouseEnter={handleLogoOrButtonsMouseEnter}
+            onMouseLeave={handleLogoOrButtonsMouseLeave}
+          >
+            {/* Logo */}
+            <img
+              src={stlogo}
+              alt="Student Tribe Logo"
+              className="h-8 md:h-12 lg:h-16 w-auto drop-shadow-lg mb-4"
+            />
+            {/* Buttons under logo */}
+            <div
+              className={`absolute left-1/2 -translate-x-1/2 w-[400px] h-[50px] md:w-[400px] max-w-[90vw] flex bg-[#2d000a] rounded-full shadow-2xl font-bold z-20 transition-all duration-300 ${
+                showButtons
+                  ? 'opacity-100 pointer-events-auto'
+                  : 'opacity-0 pointer-events-none'
+              }`}
+              style={{ top: 'calc(100% + 8px)' }}
+              onMouseEnter={handleLogoOrButtonsMouseEnter}
+              onMouseLeave={handleLogoOrButtonsMouseLeave}
+            >
+              <button
+                className={`flex-1 text-center rounded-full transition-all duration-300 border-none cursor-pointer text-sm md:text-lg hover:scale-105 ${
+                  hoveredButton === 'students'
+                    ? 'bg-gradient-to-r from-[#b8001f] to-[#7a0015] text-white'
+                    : 'bg-transparent text-gray-300 hover:text-white'
+                }`}
+                onClick={() => scrollToSection('main-section')}
+                onMouseEnter={() => handleButtonHover('students')}
+                onMouseLeave={handleButtonLeave}
+              >
+                Students
+              </button>
+              <button
+                className={`flex-1 text-center rounded-full transition-all duration-300 border-none cursor-pointer text-sm md:text-lg hover:scale-105 ${
+                  hoveredButton === 'brands'
+                    ? 'bg-gradient-to-r from-[#b8001f] to-[#7a0015] text-white'
+                    : 'bg-transparent text-gray-300 hover:text-white'
+                }`}
+                onClick={() => scrollToSection('brands-section')}
+                onMouseEnter={() => handleButtonHover('brands')}
+                onMouseLeave={handleButtonLeave}
+              >
+                Brands
+              </button>
+            </div>
+          </div>
+        </div>
 
-  // GSAP ScrollTrigger: scatter images then gather them back while pinned + scrub
-  useEffect(() => {
-    // register plugin
-    try { gsap.registerPlugin(ScrollTrigger); } catch (e) { /* already registered or not available */ }
+        {/* Content */}
+        <div
+          className="relative z-20 px-4 md:px-8 w-full transition-transform duration-500"
+          style={{ transform: showButtons ? 'translateY(80px)' : 'translateY(0)' }}
+        >
+          {/* Title */}
+          <div className="text-center mb-6 md:mb-12">
+            <h1 className="text-2xl md:text-5xl lg:text-6xl font-extrabold text-[#2d1c1c] mb-3 md:mb-6 leading-tight px-2 md:px-4">
+              Discover career paths you never know!
+            </h1>
+            <p className="text-base md:text-xl lg:text-2xl text-[#2d1c1c] mb-0 leading-relaxed px-2 md:px-4">
+              Workshops that don't bore. Webinars with no-zoom fatigue.
+              <br className="hidden md:block" />
+              Courses that actually upskill. Dive into learning with vibe.
+            </p>
+          </div>
 
-    const pinEl = pinWrapperRef.current;
-    console.log('[BrandsScreen] ScrollTrigger effect running. window.innerWidth=', window.innerWidth);
-    if (!pinEl) {
-      console.warn('[BrandsScreen] pin wrapper not found');
-      return;
-    }
+          {/* Image Grid */}
+          <div id="pin-windmill-wrap" className="relative max-w-6xl mx-auto">
+            {/* Mobile Layout */}
+            <div className="block md:hidden">
+              <div className="grid grid-cols-2 gap-3 mb-6 px-4">
+                {[
+                  leftmostUpper1st,
+                  leftmost2nd,
+                  leftLower,
+                  rightmost2nd,
+                  rightUpper1st,
+                  meeting,
+                  centerImg,
+                  leftmostUpper1st,
+                ].map((src, i) => (
+                  <div key={i}>
+                    <img
+                      src={src}
+                      alt={`Grid Img ${i + 1}`}
+                      className="w-full h-36 object-cover rounded-xl shadow-lg"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
 
-    // collect only the images inside the pin wrapper
-    const imgs = Array.from(pinEl.querySelectorAll('img'));
-    if (!imgs.length) return;
+            {/* Desktop Layout */}
+            <div className="hidden md:block">
+              <div className="grid grid-cols-5 gap-8 mb-8">
+                <div className="flex flex-col gap-6">
+                  <img
+                    src={leftmostUpper1st}
+                    alt="Team Meeting"
+                    className="w-full h-64 lg:h-80 mt-10 object-center rounded-3xl shadow-xl"
+                  />
+                  <img
+                    src={leftLower}
+                    alt="Team Collaboration"
+                    className="w-full h-20 lg:h-28 object-cover rounded-3xl shadow-xl"
+                  />
+                </div>
 
-    // Set initial scattered state to match your provided frames
-    // Frame 1: Images scattered across the entire screen area
-    const scatterPositions = [
-      { x: -200, y: -150, rotation: -25, scale: 0.7 }, // Top left
-      { x: 250, y: -120, rotation: 15, scale: 0.8 },  // Top right
-      { x: -180, y: 80, rotation: -18, scale: 0.75 },  // Middle left
-      { x: 150, y: 90, rotation: 22, scale: 0.85 },    // Middle right
-      { x: -250, y: 200, rotation: -12, scale: 0.8 },  // Bottom left
-      { x: 200, y: 180, rotation: 18, scale: 0.7 },    // Bottom right
-      { x: 0, y: -180, rotation: -8, scale: 0.9 },     // Top center
-      { x: -100, y: -50, rotation: 12, scale: 0.85 },  // Upper middle
-    ];
+                <div>
+                  <img
+                    src={leftmost2nd}
+                    alt="Professional Woman"
+                    className="w-full h-72 lg:h-5/6 object-cover rounded-3xl shadow-xl mt-18"
+                  />
+                </div>
 
-    imgs.forEach((el, idx) => {
-      const pos = scatterPositions[idx % scatterPositions.length];
-      gsap.set(el, {
-        x: pos.x,
-        y: pos.y,
-        rotation: pos.rotation,
-        scale: pos.scale,
-        opacity: 1,
-      });
-    });
+                <div>
+                  <img
+                    src={centerImg}
+                    alt="centerImage"
+                    className="w-full h-64 lg:h-76 object-cover rounded-3xl shadow-xl mt-28"
+                  />
+                </div>
 
-    // Enable pin for the scroll animation
+                <div>
+                  <img
+                    src={rightmost2nd}
+                    alt="Tech Team"
+                    className="w-full h-72 lg:h-5/6 object-cover rounded-3xl shadow-xl mt-18"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-6">
+                  <img
+                    src={rightUpper1st}
+                    alt="5th row top"
+                    className="w-full h-64 lg:h-80 object-cover rounded-3xl shadow-xl mt-10"
+                  />
+                  <img
+                    src={meeting}
+                    alt="Business Meeting"
+                    className="w-full h-20 lg:h-28 object-cover rounded-3xl shadow-xl"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Button */}
+            <div className="text-center relative">
+              <button className="relative -top-2 sm:-top-8 lg:-top-16 px-6 md:px-10 py-3 md:py-3 rounded-full bg-gradient-to-r from-[#b8001f] to-[#7a0015] text-white font-bold text-base md:text-lg shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+                Explore Now →
+              </button>
+            </div>
+          </div>
+
+          <div className="h-20 md:h-32"></div>
+        </div>
+      </div>
+    </div>
+  );
+}    // Enable pin for the scroll animation
     const enablePin = true;
 
     // Ensure there is enough vertical space for the pinned animation to play
