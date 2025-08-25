@@ -306,6 +306,12 @@ const StudentBeast = () => {
   const headerRef = useRef(null);
   const titleRef = useRef(null);
   const carouselRef = useRef(null);
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
 
   // Sample product data - replace with your actual images
   const products = [
@@ -396,49 +402,48 @@ const StudentBeast = () => {
       // Set initial states
       gsap.set(headerRef.current, { y: -50, opacity: 0 });
       gsap.set(titleRef.current, { y: 50, opacity: 0 });
-      gsap.set(carouselRef.current, { scale: 0.8, opacity: 0 });
+      gsap.set(carouselRef.current, { scale: 0.96, opacity: 0 });
 
-      // Create scroll-triggered timeline
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: 1,
-          invalidateOnRefresh: true,
-        },
+      const runAnimation = () => {
+        const tl = gsap.timeline();
+        tl.to(headerRef.current, {
+          y: 0,
+          opacity: 1,
+          duration: 0.5,
+          ease: "power2.out",
+        })
+          .to(
+            titleRef.current,
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.6,
+              ease: "power2.out",
+            },
+            0.1
+          )
+          .to(
+            carouselRef.current,
+            {
+              scale: 1,
+              opacity: 1,
+              duration: 0.8,
+              ease: "power3.out",
+            },
+            0.2
+          );
+      };
+
+      // Trigger once when section enters viewport
+      const trigger = ScrollTrigger.create({
+        trigger: containerRef.current,
+        start: "top 80%",
+        once: true,
+        onEnter: runAnimation,
       });
 
-      tl.to(headerRef.current, {
-        y: 0,
-        opacity: 1,
-        duration: 0.8,
-        ease: "power2.out",
-      })
-        .to(
-          titleRef.current,
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.8,
-            ease: "power2.out",
-          },
-          0.2
-        )
-        .to(
-          carouselRef.current,
-          {
-            scale: 1,
-            opacity: 1,
-            duration: 1,
-            ease: "power2.out",
-          },
-          0.4
-        );
-
       return () => {
-        ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
-        // Clean up timeout on unmount
+        trigger.kill();
         if (hideButtonsTimeoutRef.current) {
           clearTimeout(hideButtonsTimeoutRef.current);
         }

@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-
 import stlogo from "../assets/Whitelogo.png";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -11,13 +10,13 @@ import quizImg2 from "../assets/stApp/image 271.svg";
 import quizImg3 from "../assets/stApp/image 272.svg";
 import quizImg4 from "../assets/stApp/image 274.svg";
 import gigsImg from "../assets/stApp/image 273.svg"
-import gigsImg2 from "../assets/stApp/image 2712.svg"
+import gigsImg2 from "../assets/stApp/image 2712.svg";
 
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger);
 
 // Card Slider Component
-const CardSlider = ({ cards, className, autoSlideInterval = 3000 }) => {
+const CardSlider = ({ cards, className, autoSlideInterval = 3000, layout = 'image-title-text' }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -57,7 +56,7 @@ const CardSlider = ({ cards, className, autoSlideInterval = 3000 }) => {
 
   const handleDragMove = (clientX) => {
     if (!isDragging || !containerRef.current) return;
-    
+
     const diff = clientX - dragStart;
     const containerWidth = containerRef.current.offsetWidth;
     const offset = Math.max(-100, Math.min(100, (diff / containerWidth) * 100));
@@ -66,16 +65,16 @@ const CardSlider = ({ cards, className, autoSlideInterval = 3000 }) => {
 
   const handleDragEnd = () => {
     if (!isDragging || !containerRef.current) return;
-    
+
     setIsDragging(false);
     const threshold = 20;
-    
+
     if (dragOffset < -threshold) {
       nextSlide();
     } else if (dragOffset > threshold) {
       prevSlide();
     }
-    
+
     setDragOffset(0);
   };
 
@@ -101,7 +100,7 @@ const CardSlider = ({ cards, className, autoSlideInterval = 3000 }) => {
     if (isDragging && index === currentIndex) {
       return `translateX(${dragOffset}%)`;
     }
-    
+
     if (index === currentIndex) {
       return 'translateX(0%)';
     } else if (index > currentIndex) {
@@ -112,7 +111,7 @@ const CardSlider = ({ cards, className, autoSlideInterval = 3000 }) => {
   };
 
   return (
-    <div 
+    <div
       ref={containerRef}
       className={`relative overflow-hidden cursor-grab active:cursor-grabbing select-none ${className}`}
       onMouseDown={(e) => handleDragStart(e.clientX)}
@@ -133,42 +132,44 @@ const CardSlider = ({ cards, className, autoSlideInterval = 3000 }) => {
           className="absolute inset-0 transition-transform duration-500 ease-out"
           style={{
             transform: getCardTransform(index),
-            zIndex: index === currentIndex ? 2 : 1
+            zIndex: index === currentIndex ? 2 : 1,
           }}
         >
           {typeof card === 'string' ? (
             <img
               src={card}
               alt={`Slide ${index}`}
-              className="w-full h-full object-cover rounded-xl"
+              className="w-full h-[400px] object-cover rounded-xl border-transparent"
             />
           ) : (
-            card
+            <div className="flex flex-col h-full w-full border-transparent">
+              <div className="flex-[3] w-full h-full">
+                <img
+                  src={card.image}
+                  alt={`Slide ${index}`}
+                  className="w-full h-[280px] object-cover rounded-xl border-transparent"
+                />
+              </div>
+              {layout === 'image-title-text' && card.title && (
+                <h3 className="text-white text-center font-extrabold text-base sm:text-lg mt-3 px-5 h-[400px]">
+                  {card.title}
+                </h3>
+              )}
+              {card.description && (
+                <p className="w-full text-white text-center text-sm sm:text-base md:text-lg leading-relaxed px-5">
+                  {card.description}
+                </p>
+              )}
+
+            </div>
           )}
         </div>
       ))}
 
-      {/* Navigation Dots */}
-      {/* {cards.length > 1 && (
-        <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10">
-          {cards.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => goToSlide(index)}
-              className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                index === currentIndex
-                  ? 'bg-white scale-125'
-                  : 'bg-white/30 hover:bg-white/50'
-              }`}
-            />
-          ))}
-        </div>
-      )} */}
-
       {/* Swipe Hint */}
       {cards.length > 1 && (
         <div className="absolute top-2 right-2 text-white/50 text-xs pointer-events-none">
-          ← →
+          ← → {/* This is the swipe hint */}
         </div>
       )}
     </div>
@@ -202,15 +203,36 @@ export default function StudentApp() {
 
   // Image arrays for sliders
   const quizImages = [
-    quizImg2,
-    quizImg3,
-    quizImg4
+    {
+      image: quizImg2,
+      description: "Be part of active student. communities across India. Learn, laugh, and level up together."
+    },
+    {
+      image: quizImg3,
+      description: "Compete with friends and climb weekly leaderboards."
+    },
+    {
+      image: quizImg4,
+      description: "Keep your streaks alive and unlock rewards."
+    }
   ];
-  
+
   const gigsImages = [
-    gigsImg,
-    quizImg4,
-    gigsImg2
+    {
+      image: gigsImg,
+      title: "Gigs & Star Connects",
+      description: " Chill gigs, fun open mics, and star connects – vibe, showcase your talent, and learn directly from the pros who inspire."
+    },
+    {
+      image: quizImg4,
+      title: "Gigs & Star Connects",
+      description: "Show your vibe on stage—music, stand-up, poetry."
+    },
+    {
+      image: gigsImg2,
+      title: "Gigs & Star Connects",
+      description: "Learn directly from mentors and industry creators."
+    }
   ];
 
   useEffect(() => {
@@ -416,26 +438,6 @@ export default function StudentApp() {
     }
   }, []);
 
-  // Hover handlers for logo/buttons
-  const handleLogoOrButtonsMouseEnter = () => {
-    if (hideButtonsTimeoutRef.current) {
-      clearTimeout(hideButtonsTimeoutRef.current);
-      hideButtonsTimeoutRef.current = null;
-    }
-    setShowButtons(true);
-  };
-
-  const handleLogoOrButtonsMouseLeave = (e) => {
-    const relatedTarget = e.relatedTarget;
-    const currentTarget = e.currentTarget;
-
-    if (!relatedTarget || !currentTarget.contains(relatedTarget)) {
-      hideButtonsTimeoutRef.current = setTimeout(() => {
-        setShowButtons(false);
-      }, 300);
-    }
-  };
-
   // Button hover handlers
   const handleButtonHover = (buttonType) => {
     setHoveredButton(buttonType);
@@ -459,8 +461,8 @@ export default function StudentApp() {
       <div className="relative z-20 pt-8 md:pt-16 text-center">
         <div
           className="logo-container group inline-block cursor-pointer relative"
-          onMouseEnter={handleLogoOrButtonsMouseEnter}
-          onMouseLeave={handleLogoOrButtonsMouseLeave}
+          onMouseEnter={() => setShowButtons(true)}
+          onMouseLeave={() => setShowButtons(false)}
         >
           <img
             src={stlogo}
@@ -469,21 +471,17 @@ export default function StudentApp() {
           />
           {/* Buttons appear below logo on hover */}
           <div
-            className={`absolute left-1/2 -translate-x-1/2 w-[300px] sm:w-[400px] max-w-[90vw] flex bg-[#2d000a] rounded-full shadow-2xl font-bold z-20 transition-all duration-300 ${
-              showButtons
-                ? "opacity-100 pointer-events-auto"
-                : "opacity-0 pointer-events-none"
-            }`}
+            className={`absolute left-1/2 -translate-x-1/2 w-[300px] sm:w-[400px] max-w-[90vw] flex bg-[#2d000a] rounded-full shadow-2xl font-bold z-20 transition-all duration-300 ${showButtons ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+              }`}
             style={{
               top: "calc(100% + 8px)",
             }}
           >
             <button
-              className={`flex-1 text-center rounded-full transition-all duration-300 border-none cursor-pointer text-sm sm:text-lg hover:scale-105 py-2 px-4 ${
-                hoveredButton === "students"
+              className={`flex-1 text-center rounded-full transition-all duration-300 border-none cursor-pointer text-sm sm:text-lg hover:scale-105 py-2 px-4 ${hoveredButton === "students"
                   ? "bg-gradient-to-r from-[#b8001f] to-[#7a0015] text-white"
                   : "bg-transparent text-gray-300 hover:text-white"
-              }`}
+                }`}
               onClick={() => navigate("/")}
               onMouseEnter={() => handleButtonHover("students")}
               onMouseLeave={handleButtonLeave}
@@ -491,11 +489,10 @@ export default function StudentApp() {
               Students
             </button>
             <button
-              className={`flex-1 text-center rounded-full transition-all duration-300 border-none cursor-pointer text-sm sm:text-lg hover:scale-105 py-2 px-4 ${
-                hoveredButton === "brands"
+              className={`flex-1 text-center rounded-full transition-all duration-300 border-none cursor-pointer text-sm sm:text-lg hover:scale-105 py-2 px-4 ${hoveredButton === "brands"
                   ? "bg-gradient-to-r from-[#b8001f] to-[#7a0015] text-white"
                   : "bg-transparent text-gray-300 hover:text-white"
-              }`}
+                }`}
               onClick={() => navigate("/brands")}
               onMouseEnter={() => handleButtonHover("brands")}
               onMouseLeave={handleButtonLeave}
@@ -543,11 +540,12 @@ export default function StudentApp() {
                     <h3 className="text-white text-xs sm:text-sm font-extrabold mb-2 sm:mb-3 text-center">
                       Communities & Daily Quizzes
                     </h3>
-                    <div className="w-full mb-2 sm:mb-3">
+                    <div className="w-full border-transparent">
                       <CardSlider
                         cards={quizImages}
-                        className="w-full h-32 sm:h-48 rounded-xl shadow-lg"
+                        className="w-full h-96 sm:h-64 rounded-xl"
                         autoSlideInterval={2000}
+                        layout="title-image-text"
                       />
                     </div>
                     <p className="text-white/90 text-xs text-center leading-relaxed">
@@ -635,17 +633,14 @@ export default function StudentApp() {
                     <div className="w-full mb-2 sm:mb-3">
                       <CardSlider
                         cards={gigsImages}
-                        className="w-full h-32 sm:h-20 rounded-xl shadow-lg"
+                        className="w-full h-56 sm:h-64 rounded-xl shadow-lg"
                         autoSlideInterval={2500}
+                        layout="image-title-text"
                       />
                     </div>
                     <h3 className="text-white text-xs sm:text-sm font-extrabold mb-2 sm:mb-3 text-center">
                       Gigs & Star Connects
                     </h3>
-                    <p className="text-white/90 text-xs text-center leading-relaxed">
-                      Chill gigs, fun open mics, and star connects – vibe,
-                      showcase your talent.
-                    </p>
                   </div>
                 </div>
               </div>
@@ -686,17 +681,14 @@ export default function StudentApp() {
                     <h3 className="text-white text-xl xl:text-2xl font-extrabold mb-3 xl:mb-4 text-center">
                       Communities & Daily Quizzes
                     </h3>
-                    <div className="w-full mb-4 xl:mb-6">
+                    <div className="w-full">
                       <CardSlider
                         cards={quizImages}
-                        className="w-full h-60 xl:h-72 rounded-2xl shadow-lg"
+                        className="w-full h-[400px] rounded-2xl"
                         autoSlideInterval={2000}
+                        layout="title-image-text"
                       />
                     </div>
-                    <p className="text-white/90 text-base xl:text-lg text-center leading-relaxed">
-                      Be part of active student communities across India. Learn,
-                      laugh, and level up together.
-                    </p>
                   </div>
                 </div>
               </div>
@@ -800,18 +792,11 @@ export default function StudentApp() {
                     <div className="w-full mb-4 xl:mb-6">
                       <CardSlider
                         cards={gigsImages}
-                        className="w-full h-72 xl:h-80 rounded-2xl shadow-lg"
+                        className="w-full h-[800px] rounded-2xl"
                         autoSlideInterval={2500}
+                        layout="image-title-text"
                       />
                     </div>
-                    <h3 className="text-white text-xl xl:text-2xl font-extrabold mb-3 xl:mb-4 text-center">
-                      Gigs & Star Connects
-                    </h3>
-                    <p className="text-white/90 text-base xl:text-lg text-center leading-relaxed">
-                      Chill gigs, fun open mics, and star connects – vibe,
-                      showcase your talent, and learn directly from the pros who
-                      inspire.
-                    </p>
                   </div>
                 </div>
               </div>
@@ -822,3 +807,4 @@ export default function StudentApp() {
     </div>
   );
 }
+
